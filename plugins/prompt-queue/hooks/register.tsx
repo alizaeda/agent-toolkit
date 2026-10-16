@@ -39,6 +39,31 @@ async function remove($: Dollar, id: string) {
   await persist($, next)
 }
 
+async function sendNow($: Dollar, item: QueueItem) {
+  await remove($, item.id)
+  void $.prompt.submit({ text: item.text, asUser: true })
+}
+
+async function setArmed($: Dollar, id: string, armed: boolean) {
+  const next = await update($, items, (list: QueueItem[]) =>
+    list.map(one => (one.id === id ? { ...one, armed } : one)),
+  )
+  await persist($, next)
+}
+
+async function sendNext($: Dollar): Promise<boolean> {
+  const list = (await read($, items)) as QueueItem[]
+  const item = list.find(one => one.armed)
+
+  if (!item) {
+    return false
+  }
+
+  await sendNow($, item)
+
+  return true
+}
+
 async function queueDraft($: Dollar) {
   const { text } = await $.prompt.read()
 
@@ -53,6 +78,20 @@ async function queueDraft($: Dollar) {
 }
 
 export const register: Register = on => {
+  let isBusy = false
+
+  on('prompt.submit', async ($, e, next) => {
+    isBusy = isBusy || !e.text.trimStart().startsWith('/')
+
+    return next(e)
+  })
+
+  on('turn.complete', async ($, e, next) => {
+    isBusy = await sendNext($)
+
+    return next(e)
+  })
+
   on('session.start', async ($, e, next) => {
     const saved = await $.store.get(STORE_KEY)
 
@@ -62,7 +101,7 @@ export const register: Register = on => {
 
     await $.command.register({
       name: 'queue',
-      description: 'Queue a prompt: /queue <text> | send <n> | edit <n> | rm <n> | clear',
+      description: 'Queue a prompt: /queue <text> | send <n> | after <n> | edit <n> | rm <n> | clear',
     })
 
     return next(e)
@@ -79,7 +118,7 @@ export const register: Register = on => {
         return { text: 'Queue is empty. Use /queue <text> or the Queue draft button.' }
       }
 
-      return { text: list.map((one, i) => `${i + 1}. ${preview(one.text)}`).join('\n') }
+      return { text: list.map((one, i) => `${i + 1}. ${one.armed ? '[after] ' : ''}${preview(one.text)}`).join('\n') }
     }
 
     if (verb === 'clear') {
@@ -89,20 +128,34 @@ export const register: Register = on => {
       return { text: 'Queue cleared.' }
     }
 
-    if (verb === 'send' || verb === 'edit' || verb === 'rm') {
+    if (verb === 'send' || verb === 'after' || verb === 'edit' || verb === 'rm') {
       const item = pick()
 
       if (!item) {
         return { text: `No queue item "${rest ?? ''}". Use /queue to see the list.` }
       }
 
-      await remove($, item.id)
+      if (verb === 'after') {
+        if (isBusy) {
+          await setArmed($, item.id, true)
+
+          return { text: `Item ${rest} will send when the agent is done.` }
+        }
+
+        isBusy = true
+        $.clock.after(50, () => void sendNow($, item))
+
+        return { text: `Agent is idle. Sent item ${rest}.` }
+      }
 
       if (verb === 'send') {
-        void $.prompt.submit({ text: item.text, asUser: true })
+        isBusy = true
+        $.clock.after(50, () => void sendNow($, item))
 
         return { text: `Sent item ${rest}.` }
       }
+
+      await remove($, item.id)
 
       if (verb === 'edit') {
         await $.prompt.fill({ text: item.text, mode: 'replace' })
@@ -134,15 +187,35 @@ export const register: Register = on => {
         </Box>
         {list.map(one => (
           <Box key={one.id} gap={1} paddingLeft={2}>
-            <Text dimColor>{preview(one.text)}</Text>
+            <Text dimColor>
+              {one.armed ? '⏱ ' : ''}
+              {preview(one.text)}
+            </Text>
             <Button
               key={`send-${one.id}`}
               label="Send"
               onPress={async () => {
-                await remove($, one.id)
-                void $.prompt.submit({ text: one.text, asUser: true })
+                isBusy = true
+                await sendNow($, one)
               }}
             />
+            {one.armed ? (
+              <Button key={`hold-${one.id}`} label="Hold" onPress={() => setArmed($, one.id, false)} />
+            ) : (
+              <Button
+                key={`after-${one.id}`}
+                label="After"
+                onPress={async () => {
+                  if (isBusy) {
+                    await setArmed($, one.id, true)
+                    $.ui.toast('Will send when the agent is done.')
+                  } else {
+                    isBusy = true
+                    await sendNow($, one)
+                  }
+                }}
+              />
+            )}
             <Button
               key={`edit-${one.id}`}
               label="Edit"
