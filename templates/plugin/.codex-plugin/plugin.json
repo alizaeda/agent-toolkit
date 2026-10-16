@@ -1,0 +1,8 @@
+{
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "My Plugin",
+    "shortDescription": "What this plugin gives you",
+    "category": "Productivity"
+  }
+}

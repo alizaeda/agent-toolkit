@@ -1,0 +1,12 @@
+{
+  "name": "agent-toolkit",
+  "description": "My Claude Code mods, skills and plugins, shared across agent harnesses",
+  "owner": { "name": "Ali Eslam" },
+  "plugins": [
+    {
+      "name": "prompt-queue",
+      "source": "./plugins/prompt-queue",
+      "description": "Claude Code mod: park prompt drafts in a queue above the prompt box"
+    }
+  ]
+}
