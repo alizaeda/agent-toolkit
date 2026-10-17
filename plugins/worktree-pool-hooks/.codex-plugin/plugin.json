@@ -1,0 +1,11 @@
+{
+  "name": "worktree-pool-hooks",
+  "version": "0.1.0",
+  "description": "Hooks for worktree-pool: block root-checkout edits, enforce slot ownership, record heartbeats",
+  "hooks": "./hooks/codex.hooks.json",
+  "interface": {
+    "displayName": "Worktree Pool Hooks",
+    "shortDescription": "Keep parallel agents inside their own worktree slots",
+    "category": "Productivity"
+  }
+}

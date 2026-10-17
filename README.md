@@ -8,7 +8,7 @@ My mods, skills and plugins for coding agents. Skills use the open `SKILL.md` fo
 |---|---|---|
 | [prompt-queue](plugins/prompt-queue) | Park prompt drafts above the prompt box. Send, edit or remove each one later. | Claude Code only (mod) |
 | [worktree-pool](plugins/worktree-pool) | Pool of leased git worktree slots. Many agents work on one repo at once and never collide. Safe reclaim of idle slots. | Any harness (skills + Node CLI) |
-| [worktree-pool-hooks](plugins/worktree-pool-hooks) | Hooks for worktree-pool: block edits in the root checkout, enforce slot ownership, record heartbeats. | Claude Code only (hooks) |
+| [worktree-pool-hooks](plugins/worktree-pool-hooks) | Hooks for worktree-pool: block edits in the root checkout, enforce slot ownership, record heartbeats. | Claude Code and Codex (hooks) |
 
 ## Featured: worktree-pool
 
