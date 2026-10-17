@@ -7,6 +7,12 @@ My mods, skills and plugins for coding agents. Skills use the open `SKILL.md` fo
 | Plugin | What it does | Works in |
 |---|---|---|
 | [prompt-queue](plugins/prompt-queue) | Park prompt drafts above the prompt box. Send, edit or remove each one later. | Claude Code only (mod) |
+| [worktree-pool](plugins/worktree-pool) | Pool of leased git worktree slots. Many agents work on one repo at once and never collide. Safe reclaim of idle slots. | Any harness (skills + Node CLI) |
+| [worktree-pool-hooks](plugins/worktree-pool-hooks) | Hooks for worktree-pool: block edits in the root checkout, enforce slot ownership, record heartbeats. | Claude Code only (hooks) |
+
+## Featured: worktree-pool
+
+Running more than one coding agent on a repo breaks things: agents overwrite each other, every task reinstalls dependencies, and nobody knows which worktree is safe to delete. `worktree-pool` gives each agent its own leased slot, keeps installs warm, and frees idle slots only with proof that no work is lost. Abandoned work is saved to a branch first. [Read why and how](plugins/worktree-pool).
 
 ## Install
 
@@ -15,6 +21,8 @@ My mods, skills and plugins for coding agents. Skills use the open `SKILL.md` fo
 ```bash
 claude plugin marketplace add alizaeda/agent-toolkit
 claude plugin install prompt-queue@agent-toolkit
+claude plugin install worktree-pool@agent-toolkit
+claude plugin install worktree-pool-hooks@agent-toolkit
 ```
 
 **Any harness** (skills only; detects Claude Code, Codex, Cursor, Gemini CLI and more):
