@@ -16,7 +16,7 @@
     {
       "name": "worktree-pool-hooks",
       "source": "./plugins/worktree-pool-hooks",
-      "description": "Claude Code hooks for worktree-pool: block root-checkout edits, enforce slot ownership, record heartbeats"
+      "description": "Claude Code and Codex hooks for worktree-pool: block root-checkout edits, enforce slot ownership, record heartbeats"
     }
   ]
 }
