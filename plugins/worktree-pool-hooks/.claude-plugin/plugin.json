@@ -1,0 +1,7 @@
+{
+  "name": "worktree-pool-hooks",
+  "version": "0.1.0",
+  "description": "Claude Code hooks for a leased git worktree pool: block edits in the root checkout, enforce slot ownership, and keep lease heartbeats fresh.",
+  "author": { "name": "Ali Eslam" },
+  "license": "MIT"
+}

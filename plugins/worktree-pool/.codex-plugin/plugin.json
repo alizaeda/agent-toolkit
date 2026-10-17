@@ -1,0 +1,11 @@
+{
+  "name": "worktree-pool",
+  "version": "0.1.0",
+  "description": "Pool of leased git worktree slots so many coding agents can work on one repo in parallel without collisions",
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Worktree Pool",
+    "shortDescription": "Lease git worktree slots so parallel agents never collide",
+    "category": "Productivity"
+  }
+}

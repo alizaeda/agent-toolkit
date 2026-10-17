@@ -7,6 +7,16 @@
       "name": "prompt-queue",
       "source": "./plugins/prompt-queue",
       "description": "Claude Code mod: park prompt drafts in a queue above the prompt box"
+    },
+    {
+      "name": "worktree-pool",
+      "source": "./plugins/worktree-pool",
+      "description": "Pool of leased git worktree slots so many agents can work on one repo in parallel without collisions"
+    },
+    {
+      "name": "worktree-pool-hooks",
+      "source": "./plugins/worktree-pool-hooks",
+      "description": "Claude Code hooks for worktree-pool: block root-checkout edits, enforce slot ownership, record heartbeats"
     }
   ]
 }

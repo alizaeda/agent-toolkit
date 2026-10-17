@@ -1,0 +1,14 @@
+{
+  "version": 1,
+  "slotCount": 4,
+  "poolDirectory": "../my-repo-worktrees",
+  "baseRef": "origin/main",
+  "slotPrefix": "slot-",
+  "prepare": {
+    "command": ["pnpm", "install", "--frozen-lockfile"],
+    "outputs": ["node_modules"]
+  },
+  "policy": {
+    "finishedIdleMinutes": 60
+  }
+}
