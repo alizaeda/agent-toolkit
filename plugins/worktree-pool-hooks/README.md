@@ -1,6 +1,6 @@
 # worktree-pool-hooks
 
-Claude Code hooks for [worktree-pool](../worktree-pool). Claude Code only.
+Hooks for [worktree-pool](../worktree-pool). Works in Claude Code and Codex.
 
 | Hook | What it does |
 |---|---|
@@ -12,7 +12,14 @@ The hooks do nothing in a repo without `worktree-pool.config.json`. They fail op
 
 Also blocked, in any repo with a pool: edits to Claude and Codex session transcripts, device paths (`\\?\`), UNC paths and NTFS stream paths.
 
-## Install
+## Codex
+
+The same guard runs in Codex. `.codex-plugin/plugin.json` points at `hooks/codex.hooks.json`, which checks `apply_patch` and patches sent through `Bash`, and runs the heartbeat on `Stop` and `SessionEnd`.
+
+- Codex does not trust plugin hooks on install. Review and enable them once with `/hooks`.
+- Codex lists lifecycle hooks only for plugins you install by hand, so add this folder as a local plugin.
+
+## Install (Claude Code)
 
 ```bash
 claude plugin marketplace add alizaeda/agent-toolkit
